@@ -1,4 +1,4 @@
-import { ArrowLeft, BarChart3, BookOpen, Map, Sparkles } from "lucide-react";
+import { ArrowLeft, Award, BarChart3, BookOpen, Map, Sparkles } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
 import { getCourse } from "../api/coursesApi";
@@ -66,6 +66,7 @@ export default function CourseDetailPage() {
       return a.index - b.index;
     })
     .map(({ module }) => module);
+  const moduleProgressMap = Object.fromEntries((course.modules || []).map((module) => [module.id, module]));
 
   return (
     <div className="mx-auto max-w-7xl space-y-6">
@@ -105,10 +106,23 @@ export default function CourseDetailPage() {
             {label}
           </Button>
         ))}
+        {course.has_completion_report && (
+          <Link to={`/courses/${courseId}/report`}>
+            <Button variant="ghost">
+              <Award className="h-4 w-4" />
+              Final Report
+            </Button>
+          </Link>
+        )}
       </div>
 
       {activeTab === "roadmap" && (
-        <CourseRoadmap course={course} roadmap={course.roadmap} compact />
+        <CourseRoadmap
+          course={course}
+          roadmap={course.roadmap}
+          moduleProgressMap={moduleProgressMap}
+          compact
+        />
       )}
 
       {activeTab === "modules" && (

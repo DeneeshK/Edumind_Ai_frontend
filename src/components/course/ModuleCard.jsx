@@ -45,12 +45,32 @@ export default function ModuleCard({ courseId, module }) {
             <p className="mt-1 text-sm text-slate-400">{module.concept}</p>
           </div>
         </div>
-        <Icon className="h-5 w-5 shrink-0 text-mint" />
+        <Icon className={`h-5 w-5 shrink-0 ${module.status === "completed" ? "text-green-600" : "text-mint"}`} />
       </div>
       <p className="mt-4 line-clamp-3 text-sm text-slate-400">{module.description}</p>
+      {module.status === "completed" && module.latest_mastery_score != null && (
+        <div className="mt-3 space-y-1">
+          <div className="flex items-center justify-between text-xs text-slate-500">
+            <span>Mastery</span>
+            <span className="font-semibold text-slate-700">{Math.round(module.latest_mastery_score * 100)}%</span>
+          </div>
+          <div className="h-1.5 overflow-hidden rounded-full bg-slate-200">
+            <div className="h-full rounded-full bg-mint" style={{ width: `${Math.round(module.latest_mastery_score * 100)}%` }} />
+          </div>
+        </div>
+      )}
       <div className="mt-5 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-500">
         <span>{module.estimated_minutes} min</span>
         <span>{module.content_exists ? "Saved lesson" : "Generates on open"}</span>
+        {module.has_eval_report && (
+          <Link
+            to={`/courses/${courseId}/modules/${module.id}?showReport=true`}
+            onClick={(e) => e.stopPropagation()}
+            className="text-xs font-semibold text-mint hover:underline"
+          >
+            Progress Report
+          </Link>
+        )}
         <Link
           to={modulePath}
           onClick={(event) => event.stopPropagation()}

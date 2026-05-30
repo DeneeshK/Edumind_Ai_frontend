@@ -1,7 +1,7 @@
 import { ArrowLeft, Layers } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { getCourseRoadmap } from "../api/coursesApi";
+import { getCourse } from "../api/coursesApi";
 import Button from "../components/common/Button";
 import LoadingSpinner from "../components/common/LoadingSpinner";
 import CourseRoadmap from "../components/course/CourseRoadmap";
@@ -19,10 +19,10 @@ export default function RoadmapPage() {
       setLoading(true);
       setError("");
       try {
-        const result = await getCourseRoadmap(courseId);
+        const result = await getCourse(courseId);
         if (!active) return;
         setCourse(result.course);
-        setRoadmap(result.roadmap);
+        setRoadmap(result.course?.roadmap);
       } catch (err) {
         if (active) setError(err.message);
       } finally {
@@ -67,7 +67,11 @@ export default function RoadmapPage() {
           </Button>
         </Link>
       </div>
-      <CourseRoadmap course={course} roadmap={roadmap} />
+      <CourseRoadmap
+        course={course}
+        roadmap={roadmap}
+        moduleProgressMap={Object.fromEntries((course?.modules || []).map((module) => [module.id, module]))}
+      />
     </div>
   );
 }

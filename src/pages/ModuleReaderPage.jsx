@@ -1,6 +1,6 @@
 import { ArrowLeft, CheckCircle2, GripVertical, PanelRightClose, PanelRightOpen } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { Link, useParams, useNavigate } from "react-router-dom";
+import { Link, useParams, useNavigate, useSearchParams } from "react-router-dom";
 import {
   getModule,
   completeModule,
@@ -116,6 +116,8 @@ function EvaluationReportPanel({ report }) {
 
 export default function ModuleReaderPage() {
   const { courseId, moduleId } = useParams();
+  const [searchParams] = useSearchParams();
+  const shouldShowReport = searchParams.get("showReport") === "true";
   const [module, setModule] = useState(null);
   const [content, setContent] = useState("");
   const [videos, setVideos] = useState([]);
@@ -133,6 +135,7 @@ export default function ModuleReaderPage() {
   const { start, status, error: streamError } = useSSE();
   const chat = useModuleChat(courseId, moduleId);
   const layoutRef = useRef(null);
+  const reportPanelRef = useRef(null);
   
   const navigate = useNavigate();
   const [evalModalOpen, setEvalModalOpen] = useState(false);
@@ -249,6 +252,14 @@ export default function ModuleReaderPage() {
       active = false;
     };
   }, [content, courseId, module, moduleId, status]);
+
+  useEffect(() => {
+    if (shouldShowReport && latestEvaluationReport && reportPanelRef.current) {
+      setTimeout(() => {
+        reportPanelRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 300);
+    }
+  }, [shouldShowReport, latestEvaluationReport]);
 
   async function markComplete() {
     const result = await completeModule(courseId, moduleId);
@@ -385,7 +396,9 @@ export default function ModuleReaderPage() {
             {streamError && <p className="mb-4 text-sm text-rose">{streamError}</p>}
             <LessonViewer content={content || "Preparing lesson..."} />
             <VideoResources videos={videos} />
-            <EvaluationReportPanel report={latestEvaluationReport} />
+            <div ref={reportPanelRef}>
+              <EvaluationReportPanel report={latestEvaluationReport} />
+            </div>
             <div className="mt-8 flex justify-end border-t border-line pt-4">
               <Button onClick={handleNextClick} variant="primary">Next Module</Button>
             </div>

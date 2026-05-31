@@ -48,7 +48,7 @@ export default function DashboardPage() {
     <div className="mx-auto max-w-7xl space-y-9">
       <section className="px-0 pb-10 pt-8 sm:pb-12 sm:pt-10 lg:pb-16 lg:pt-12">
         <div className="flex flex-col justify-between gap-8 lg:flex-row lg:items-end">
-          <div className="max-w-5xl lg:-ml-24 xl:-ml-44 2xl:-ml-64">
+          <div className="dashboard-hero-title-wrap max-w-5xl">
             <h1
               className="text-[3.5rem] font-black tracking-normal text-slate-100 sm:text-[4.5rem] lg:text-[5.85rem]"
               aria-label="EduMind.ai"

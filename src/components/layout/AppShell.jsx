@@ -6,16 +6,20 @@ import Sidebar from "./Sidebar";
 export default function AppShell() {
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const sidebarWidth = sidebarCollapsed ? "4rem" : "18rem";
 
   return (
-    <div className="notebook-grid flex min-h-screen overflow-x-hidden text-slate-100">
+    <div
+      className="notebook-grid min-h-screen overflow-x-hidden text-slate-100"
+      style={{ "--app-sidebar-width": sidebarWidth }}
+    >
       <Sidebar
         collapsed={sidebarCollapsed}
         mobileOpen={mobileSidebarOpen}
         onMobileClose={() => setMobileSidebarOpen(false)}
         onToggleCollapsed={() => setSidebarCollapsed((current) => !current)}
       />
-      <div className="flex min-w-0 flex-1 flex-col">
+      <div className="flex min-h-screen min-w-0 flex-col transition-[margin] duration-300 ease-in-out lg:ml-[var(--app-sidebar-width)]">
         <div className="sticky top-0 z-30 flex items-center border-b border-line bg-white/85 px-4 py-3 backdrop-blur lg:hidden">
           <button
             type="button"

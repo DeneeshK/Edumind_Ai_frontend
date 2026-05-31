@@ -60,6 +60,36 @@ input[type="range"] {
   white-space: nowrap;
 }
 
+@media (min-width: 1024px) {
+  .dashboard-hero-title-wrap {
+    margin-left: clamp(
+      -6rem,
+      calc((80rem - (100vw - var(--app-sidebar-width, 18rem) - 4rem)) / 2),
+      0rem
+    );
+  }
+}
+
+@media (min-width: 1280px) {
+  .dashboard-hero-title-wrap {
+    margin-left: clamp(
+      -11rem,
+      calc((80rem - (100vw - var(--app-sidebar-width, 18rem) - 4rem)) / 2),
+      0rem
+    );
+  }
+}
+
+@media (min-width: 1536px) {
+  .dashboard-hero-title-wrap {
+    margin-left: clamp(
+      -16rem,
+      calc((80rem - (100vw - var(--app-sidebar-width, 18rem) - 4rem)) / 2),
+      0rem
+    );
+  }
+}
+
 .dashboard-brand-ai-glow {
   display: inline-block;
   animation: dashboard-brand-ai-complete-glow 4.8s ease-in-out infinite both;

@@ -189,7 +189,7 @@ export default function Sidebar({
   return (
     <>
       <aside
-        className={`sticky top-0 hidden h-screen shrink-0 overflow-x-hidden overflow-y-auto border-r border-line bg-white/95 py-7 shadow-sm transition-all duration-300 ease-in-out lg:flex ${
+        className={`fixed inset-y-0 left-0 z-40 hidden h-screen shrink-0 overflow-x-hidden overflow-y-auto border-r border-line bg-white/95 py-7 shadow-sm transition-all duration-300 ease-in-out lg:flex ${
           collapsed ? "w-16 px-2" : "w-72 px-6"
         }`}
         aria-label="Primary navigation"

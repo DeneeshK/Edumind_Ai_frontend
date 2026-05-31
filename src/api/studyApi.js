@@ -57,49 +57,59 @@ export function createPdfNotes({ file, title, subject, depth = "medium" }) {
 
   return studyRequest("/pdf/short-note", {
     method: "POST",
-    body: formData
+    body: formData,
   });
 }
 
 export function createYoutubeNotes({ url, subject, depth = "medium" }) {
   return studyRequest("/youtube/learnable-note", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       url,
       subject: subject?.trim() || undefined,
-      depth
-    })
+      depth,
+    }),
   });
 }
 
-export function startLiveClassSession({ title, subject }) {
+export function startLiveClassSession({ title, subject, depth = "medium" }) {
   return studyRequest("/live-class/start", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       title,
-      subject: subject?.trim() || undefined
-    })
+      subject: subject?.trim() || undefined,
+      depth,
+    }),
   });
 }
 
+// uploadLiveClassAudioChunk is no longer used — recording is now sent
+// as a single blob at finish. Kept here for reference only.
 export function uploadLiveClassAudioChunk(sessionId, blob) {
   const formData = new FormData();
   formData.append("file", blob, `chunk-${Date.now()}.webm`);
 
   return studyRequest(`/live-class/${encodeURIComponent(sessionId)}/audio-chunk`, {
     method: "POST",
-    body: formData
+    body: formData,
   });
 }
 
-export function finishLiveClassSession(sessionId) {
+// Sends the complete recording blob directly to the finish endpoint.
+// The backend now accepts an optional `file` field on this endpoint.
+export function finishLiveClassSession(sessionId, recordingBlob) {
+  if (recordingBlob) {
+    const formData = new FormData();
+    formData.append("file", recordingBlob, "recording.webm");
+    return studyRequest(`/live-class/${encodeURIComponent(sessionId)}/finish`, {
+      method: "POST",
+      body: formData,
+    });
+  }
+  // Fallback: no blob (e.g. called without recording)
   return studyRequest(`/live-class/${encodeURIComponent(sessionId)}/finish`, {
-    method: "POST"
+    method: "POST",
   });
 }

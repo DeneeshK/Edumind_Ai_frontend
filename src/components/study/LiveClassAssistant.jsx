@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from "react";
 import {
   finishLiveClassSession,
   startLiveClassSession,
-  uploadLiveClassAudioChunk
 } from "../../api/studyApi";
 import Button from "../common/Button";
 import Card from "../common/Card";
@@ -15,6 +14,11 @@ function formatElapsed(seconds) {
   const minutes = Math.floor(seconds / 60).toString().padStart(2, "0");
   const remainder = Math.floor(seconds % 60).toString().padStart(2, "0");
   return `${minutes}:${remainder}`;
+}
+
+function formatSize(bytes) {
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
 
 function mapCaptureError(error) {
@@ -61,13 +65,16 @@ function InstructionSteps() {
   );
 }
 
+const MAX_RECORDING_BYTES = 50 * 1024 * 1024; // 50MB hard limit (~30 min)
+
 export default function LiveClassAssistant() {
   const [status, setStatus] = useState("idle");
   const [title, setTitle] = useState("");
   const [subject, setSubject] = useState("");
+  const [depth, setDepth] = useState("medium");
   const [elapsed, setElapsed] = useState(0);
-  const [chunkCount, setChunkCount] = useState(0);
-  const [processingText, setProcessingText] = useState("Transcribing audio...");
+  const [recordedSize, setRecordedSize] = useState(0);
+  const [processingText, setProcessingText] = useState("Uploading recording...");
   const [error, setError] = useState("");
   const [result, setResult] = useState(null);
   const [transcriptOpen, setTranscriptOpen] = useState(false);
@@ -75,9 +82,10 @@ export default function LiveClassAssistant() {
   const sessionIdRef = useRef("");
   const streamRef = useRef(null);
   const recorderRef = useRef(null);
-  const uploadPromisesRef = useRef([]);
+  const chunksRef = useRef([]);       // all recorded blobs stored in memory
   const stopRequestedRef = useRef(false);
   const startedAtRef = useRef(0);
+  const sizeRef = useRef(0);
 
   useEffect(() => {
     if (status !== "recording") return undefined;
@@ -92,12 +100,13 @@ export default function LiveClassAssistant() {
     recorderRef.current = null;
     streamRef.current = null;
     sessionIdRef.current = "";
-    uploadPromisesRef.current = [];
+    chunksRef.current = [];
     stopRequestedRef.current = false;
+    sizeRef.current = 0;
     setStatus("idle");
     setElapsed(0);
-    setChunkCount(0);
-    setProcessingText("Transcribing audio...");
+    setRecordedSize(0);
+    setProcessingText("Uploading recording...");
     setError("");
     setResult(null);
     setTranscriptOpen(false);
@@ -121,15 +130,17 @@ export default function LiveClassAssistant() {
     setStatus("requesting");
 
     try {
+      // Start backend session first
       const session = await startLiveClassSession({
         title: title.trim(),
-        subject
+        subject,
+        depth,
       });
       sessionIdRef.current = session.session_id;
 
       const stream = await navigator.mediaDevices.getDisplayMedia({
         video: true,
-        audio: true
+        audio: true,
       });
 
       const audioTracks = stream.getAudioTracks();
@@ -141,19 +152,24 @@ export default function LiveClassAssistant() {
       const audioStream = new MediaStream(audioTracks);
       const mimeType = ["audio/webm;codecs=opus", "audio/webm", "audio/ogg"]
         .find((type) => MediaRecorder.isTypeSupported(type)) || "";
+
       const recorder = new MediaRecorder(audioStream, mimeType ? { mimeType } : {});
 
+      // Collect blobs in memory — do NOT upload during recording
       recorder.ondataavailable = (dataEvent) => {
         if (dataEvent.data?.size > 0) {
-          const upload = uploadLiveClassAudioChunk(session.session_id, dataEvent.data)
-            .then((response) => {
-              setChunkCount(response.chunk_count || 0);
-              return response;
-            });
-          uploadPromisesRef.current.push(upload);
+          chunksRef.current.push(dataEvent.data);
+          sizeRef.current += dataEvent.data.size;
+          setRecordedSize(sizeRef.current);
+
+          // Safety: stop if recording exceeds 50MB (~30 min)
+          if (sizeRef.current >= MAX_RECORDING_BYTES) {
+            stopAssistant();
+          }
         }
       };
 
+      // Auto-stop if user closes the screen share popup
       stream.getVideoTracks()[0]?.addEventListener("ended", () => {
         if (recorder.state === "recording") {
           stopAssistant();
@@ -162,12 +178,15 @@ export default function LiveClassAssistant() {
 
       streamRef.current = stream;
       recorderRef.current = recorder;
-      uploadPromisesRef.current = [];
+      chunksRef.current = [];
+      sizeRef.current = 0;
       stopRequestedRef.current = false;
       startedAtRef.current = Date.now();
       setElapsed(0);
-      setChunkCount(0);
+      setRecordedSize(0);
       setStatus("recording");
+
+      // Collect in 5s slices (keeps memory manageable) but never uploads during recording
       recorder.start(5000);
     } catch (err) {
       streamRef.current?.getTracks().forEach((track) => track.stop());
@@ -182,15 +201,12 @@ export default function LiveClassAssistant() {
     if (stopRequestedRef.current) return;
     stopRequestedRef.current = true;
     setStatus("stopping");
-    setProcessingText("Transcribing audio...");
-
-    const processingTimer = window.setTimeout(() => {
-      setProcessingText("Generating notes...");
-    }, 1400);
+    setProcessingText("Uploading recording...");
 
     try {
       const recorder = recorderRef.current;
 
+      // Stop recorder and wait for the final ondataavailable to fire
       if (recorder?.state === "recording") {
         await new Promise((resolve) => {
           recorder.onstop = resolve;
@@ -200,13 +216,23 @@ export default function LiveClassAssistant() {
 
       streamRef.current?.getTracks().forEach((track) => track.stop());
 
-      const uploads = await Promise.allSettled(uploadPromisesRef.current);
-      const failedUpload = uploads.find((item) => item.status === "rejected");
-      if (failedUpload) {
-        throw failedUpload.reason;
+      const chunks = chunksRef.current;
+      if (!chunks.length) {
+        throw new Error("No audio was recorded. Make sure tab audio is shared.");
       }
 
-      const data = await finishLiveClassSession(sessionIdRef.current);
+      // Combine all blobs into one file and upload in a single POST
+      const mimeType = chunks[0].type || "audio/webm";
+      const fullBlob = new Blob(chunks, { type: mimeType });
+
+      setProcessingText("Uploading recording...");
+
+      const formData = new FormData();
+      formData.append("file", fullBlob, "recording.webm");
+
+      // Upload the full recording to the finish endpoint directly
+      const data = await finishLiveClassSession(sessionIdRef.current, fullBlob);
+
       if (data.status === "completed" && !data.error) {
         setResult(data);
         setStatus("done");
@@ -217,7 +243,6 @@ export default function LiveClassAssistant() {
       setError(mapCaptureError(err));
       setStatus("error");
     } finally {
-      window.clearTimeout(processingTimer);
       recorderRef.current = null;
       streamRef.current = null;
     }
@@ -240,6 +265,7 @@ export default function LiveClassAssistant() {
   }
 
   if (status === "recording") {
+    const nearLimit = sizeRef.current > MAX_RECORDING_BYTES * 0.85;
     return (
       <CenteredCard>
         <div className="space-y-6 text-center">
@@ -257,7 +283,14 @@ export default function LiveClassAssistant() {
               />
             ))}
           </div>
-          <p className="text-sm text-slate-500">Chunks uploaded: {chunkCount}</p>
+          <p className="text-sm text-slate-500">
+            Recorded: {formatSize(recordedSize)}
+            {nearLimit && (
+              <span className="ml-2 font-semibold text-amber-400">
+                · Approaching 30-min limit
+              </span>
+            )}
+          </p>
           <Button type="button" className="px-6 py-3 text-base" onClick={stopAssistant}>
             Stop and Generate Notes
           </Button>
@@ -283,7 +316,7 @@ export default function LiveClassAssistant() {
       <div className="space-y-5">
         <div className="rounded-xl border border-mint/25 bg-mint/10 p-4 text-sm font-semibold text-mint">
           <CheckCircle2 className="mr-2 inline h-4 w-4" />
-          Notes ready - {title}
+          Notes ready — {title}
         </div>
         {result?.transcript && (
           <Card className="p-5">
@@ -356,6 +389,24 @@ export default function LiveClassAssistant() {
             placeholder="e.g. Physics"
             className={inputClasses}
           />
+        </div>
+
+        {/* Depth selector */}
+        <div className="flex gap-2">
+          {["short", "medium", "deep"].map((d) => (
+            <button
+              key={d}
+              type="button"
+              onClick={() => setDepth(d)}
+              className={`flex-1 rounded-lg border py-2 text-sm font-medium capitalize transition ${
+                depth === d
+                  ? "border-mint bg-mint/10 text-mint"
+                  : "border-line bg-panel text-slate-400 hover:border-slate-500"
+              }`}
+            >
+              {d}
+            </button>
+          ))}
         </div>
 
         <InstructionSteps />

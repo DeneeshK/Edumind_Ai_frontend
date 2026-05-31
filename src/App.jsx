@@ -8,6 +8,7 @@ import CoursesPage from "./pages/CoursesPage";
 import NewCoursePage from "./pages/NewCoursePage";
 import CourseDetailPage from "./pages/CourseDetailPage";
 import RoadmapPage from "./pages/RoadmapPage";
+import SchedulePage from "./pages/SchedulePage";
 import ModuleReaderPage from "./pages/ModuleReaderPage";
 import CourseReportPage from "./pages/CourseReportPage";
 import ProgressPage from "./pages/ProgressPage";
@@ -43,6 +44,7 @@ export default function App() {
         <Route path="/courses/new" element={<NewCoursePage />} />
         <Route path="/courses/:courseId" element={<CourseDetailPage />} />
         <Route path="/courses/:courseId/roadmap" element={<RoadmapPage />} />
+        <Route path="/courses/:courseId/schedule" element={<SchedulePage />} />
         <Route path="/courses/:courseId/report" element={<CourseReportPage />} />
         <Route path="/courses/:courseId/modules/:moduleId" element={<ModuleReaderPage />} />
         <Route path="/study-assistant" element={<StudyAssistantPage />} />

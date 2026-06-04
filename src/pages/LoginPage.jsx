@@ -7,35 +7,35 @@ const slides = [
     title: "Courses Built for Your Learning Style",
     subtitle:
       "AI designs your course from your goals, pace, prior knowledge, and the way you learn best.",
-    image: "/images/learning-style-course.png",
+    image: "/images/slideshow-learning-style.png",
     alt: "Personalized course path dashboard showing learner profile, course sequence, AI personalization, and recommended pace",
   },
   {
     title: "Follows Your Path, Adapts as You Learn",
     subtitle:
       "AI updates your next steps, skips what you know, and focuses on what you need next.",
-    image: "/images/adaptive-learning-path.png",
+    image: "/images/slideshow-adaptive-path.png",
     alt: "Adaptive learning path dashboard showing completed lessons, skipped topics, focus areas, next recommendation, and learner performance",
   },
   {
     title: "Evaluates Like a Real Mentor",
     subtitle:
       "AI analyzes answers, finds shallow understanding, tracks progress, and gives the right practice before moving forward.",
-    image: "/images/mentor-evaluation.png",
+    image: "/images/slideshow-mentor-evaluation.png",
     alt: "Assessment dashboard showing evaluation results, concept depth, weak topics, learning analytics, and recommended practice",
   },
   {
     title: "Meetings Become Learnable Notes",
     subtitle:
       "Turn Google Meet sessions into structured notes, doubts, Q&A, and flashcards.",
-    image: "/images/google-meet-notes.png",
+    image: "/images/slideshow-google-meet.png",
     alt: "Google Meet session being transformed into learnable notes, doubts, Q&A, and flashcards",
   },
   {
     title: "YouTube & PDFs Become Study Kits",
     subtitle:
       "Convert videos and PDFs into notes, MCQs, flashcards, summaries, and PDF Q&A.",
-    image: "/images/youtube-pdf-notes.png",
+    image: "/images/slideshow-youtube-pdf.png",
     alt: "YouTube links and PDFs being converted into notes, MCQs, flashcards, and PDF question answering",
   },
 ];
@@ -112,6 +112,7 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [activeSlide, setActiveSlide] = useState(0);
+  const slide = slides[activeSlide];
 
   useEffect(() => {
     const timer = window.setInterval(() => {
@@ -180,42 +181,38 @@ export default function LoginPage() {
               {error && <p className="mt-4 text-sm text-rose">{error}</p>}
             </div>
 
-            <div className="mt-[1.1in] lg:w-[calc(100vw-58rem)] lg:max-w-[50rem]">
+            <div className="mt-[0.7in] rounded-xl border border-white/70 bg-white/90 p-4 shadow-[0_18px_45px_rgba(124,58,237,0.12)] backdrop-blur-xl">
               <h3 className="text-2xl font-black leading-tight tracking-normal text-slate-950">
                 What Edumind does
               </h3>
-              <p className="mt-3 max-w-lg text-sm leading-6 text-slate-600 lg:max-w-none">
+              <p className="mt-3 max-w-lg text-sm leading-6 text-slate-600">
                 Edumind is an AI-powered learning workspace that creates personalized courses from a student's intent, prior knowledge, pace, available time, and preferred learning style. It builds a learning path around the student, evaluates understanding after each module, detects weak areas, and updates the next steps automatically.
               </p>
-              <p className="mt-3 max-w-lg text-sm font-black leading-6 text-mint lg:max-w-none">
+              <p className="mt-3 max-w-lg text-sm font-black leading-6 text-mint">
                 A constantly evolving AI-generated course - built around the learner.
               </p>
-            </div>
 
-            <div className="mt-6 lg:w-[calc(100vw-58rem)] lg:max-w-[50rem]">
-              <h3 className="text-2xl font-black leading-tight tracking-normal text-slate-950">
+              <h3 className="mt-6 text-2xl font-black leading-tight tracking-normal text-slate-950">
                 Turn your <span className="text-mint">Google Meet, Youtube links, pdf</span> into Study Materials
               </h3>
             </div>
           </div>
         </section>
 
-        <section className="w-full lg:fixed lg:right-[1.5in] lg:top-[calc(50%+1cm)] lg:z-10 lg:w-[min(48rem,calc(100vw-43rem))] lg:-translate-y-[calc(50%+2.5rem)]" aria-label="EduMind feature carousel">
-          <div className="overflow-hidden rounded-lg border border-white/70 bg-white/85 shadow-[0_28px_90px_rgba(79,70,229,0.18)] backdrop-blur-xl">
-            <div className="relative flex flex-col overflow-hidden rounded-lg border border-mint/10 bg-[#f8f4ff]">
-              <div className="relative aspect-[1122/1402] w-full overflow-hidden rounded-t-lg bg-[#f8f4ff]">
-                {slides.map((item, index) => (
+        <section className="w-full lg:fixed lg:right-[1cm] lg:top-[calc(50%+1cm)] lg:z-10 lg:w-[min(66rem,calc(100vw-39rem))] lg:-translate-y-[calc(50%+2.5rem)]" aria-label="EduMind feature carousel">
+          <div className="login-showcase-glow relative overflow-hidden rounded-xl p-[2px] shadow-[0_28px_90px_rgba(79,70,229,0.18)]">
+            <div className="relative z-10 flex flex-col overflow-hidden rounded-xl border border-white/70 bg-white/85 backdrop-blur-xl">
+              <div className="relative flex flex-col overflow-hidden rounded-xl border border-mint/10 bg-[#f8f4ff]">
+                <div className="relative aspect-[1491/1055] w-full overflow-hidden rounded-xl bg-[#f8f4ff]">
                   <img
-                    key={item.image}
-                    src={item.image}
-                    alt={item.alt}
-                    className={`absolute inset-0 block h-full w-full object-cover object-center transition-[opacity,transform] duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-[opacity,transform] ${
-                      index === activeSlide
-                        ? "z-10 scale-100 opacity-100"
-                        : "z-0 scale-[1.01] opacity-0"
-                    }`}
+                    key={slide.image}
+                    src={slide.image}
+                    alt={slide.alt}
+                    className="block h-full w-full rounded-xl object-cover object-right"
+                    width="1491"
+                    height="1055"
                   />
-                ))}
+                </div>
               </div>
             </div>
           </div>

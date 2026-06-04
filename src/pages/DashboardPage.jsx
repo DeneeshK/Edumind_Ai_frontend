@@ -51,21 +51,23 @@ export default function DashboardPage() {
           <div className="dashboard-hero-title-wrap max-w-5xl">
             <h1
               className="text-[3.5rem] font-black tracking-normal text-slate-100 sm:text-[4.5rem] lg:text-[5.85rem]"
-              aria-label="EduMind.ai"
+              aria-label="EduMindai.org"
             >
               <span className="dashboard-brand-visual" aria-hidden="true">
                 <span>EduMind</span>
-                <span className="dashboard-brand-ai-glow text-mint">.a</span>
+                <span className="dashboard-brand-ai-glow text-mint">a</span>
                 <span className="dashboard-brand-i dashboard-brand-ai-glow">
                   <span className="dashboard-brand-i-spacer">i</span>
                   <span className="dashboard-brand-i-stem">i</span>
                   <span className="dashboard-brand-i-dot" />
                 </span>
+                <span className="text-[0.5em] text-slate-950">.org</span>
               </span>
             </h1>
-            <p className="mt-0 max-w-2xl text-lg leading-relaxed text-slate-300">
-              Adaptive learning platform for structured courses and focused study notes.
-            </p>
+            <h2 className="mt-5 max-w-3xl text-3xl font-black leading-tight tracking-normal text-slate-950 sm:text-4xl lg:text-[2.75rem]">
+              <span className="block">Build Your Own AI Course,</span>
+              <span className="block text-mint">Matched to Your Learning Style</span>
+            </h2>
           </div>
           <div className="flex flex-wrap gap-3 lg:pb-3">
             <Link to="/courses">

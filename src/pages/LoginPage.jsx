@@ -134,13 +134,13 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="relative min-h-screen overflow-hidden px-4 py-8 sm:px-6 lg:px-8">
+    <div className="relative min-h-screen overflow-x-hidden px-4 py-8 sm:px-6 lg:px-8">
       <div className="pointer-events-none absolute left-[-8rem] top-[-10rem] h-80 w-80 rounded-full bg-mint/15 blur-3xl" />
       <div className="pointer-events-none absolute bottom-[-12rem] right-[-8rem] h-96 w-96 rounded-full bg-amber/20 blur-3xl" />
 
       <div className="relative mx-auto grid min-h-[calc(100vh-4rem)] w-full max-w-[88rem] items-center gap-8 lg:grid-cols-[minmax(22rem,0.43fr)_minmax(0,0.57fr)] lg:gap-7 xl:gap-8">
-        <section className="relative flex w-full flex-col items-start lg:min-h-[calc(100vh-4rem)] lg:self-stretch lg:justify-self-start lg:pt-12">
-          <div className="flex w-full max-w-[34rem] flex-col items-start lg:fixed lg:left-[0.7in] lg:top-10 lg:z-20">
+        <section className="relative flex w-full flex-col items-start lg:min-h-[calc(100vh-4rem)] lg:self-stretch lg:justify-self-start lg:pt-10">
+          <div className="relative z-20 flex w-full max-w-[34rem] flex-col items-start">
             <h1
               className="text-[3.5rem] font-black tracking-normal text-slate-100 sm:text-[4.5rem] lg:text-[5.35rem]"
               aria-label="EduMindai.org"
@@ -199,7 +199,7 @@ export default function LoginPage() {
           </div>
         </section>
 
-        <section className="w-full lg:fixed lg:right-[1cm] lg:top-[calc(50%+1cm)] lg:z-10 lg:w-[min(66rem,calc(100vw-39rem))] lg:-translate-y-[calc(50%+2.5rem)]" aria-label="EduMind feature carousel">
+        <section className="relative z-10 w-full lg:self-center lg:justify-self-end" aria-label="EduMind feature carousel">
           <div className="login-showcase-glow relative overflow-hidden rounded-xl p-[2px] shadow-[0_28px_90px_rgba(79,70,229,0.18)]">
             <div className="relative z-10 flex flex-col overflow-hidden rounded-xl border border-white/70 bg-white/85 backdrop-blur-xl">
               <div className="relative flex flex-col overflow-hidden rounded-xl border border-mint/10 bg-[#f8f4ff]">

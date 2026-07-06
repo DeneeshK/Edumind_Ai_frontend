@@ -73,7 +73,8 @@ const initialSetup = {
   must_include: "",
   do_not_include: "",
   deadline: "",
-  pace: ""
+  pace: "",
+  web_search_enabled: false
 };
 
 function optionClasses(selected) {
@@ -295,6 +296,7 @@ export default function NewCoursePage() {
       do_not_include: doNotInclude,
       deadline: setup.deadline,
       pace: setup.pace || "medium",
+      web_search_enabled: !!setup.web_search_enabled,
       prior_knowledge: priorKnowledge,
       profile: {
         topic,
@@ -572,6 +574,33 @@ export default function NewCoursePage() {
             onEdit={() => setStepIndex(item.step)}
           />
         ))}
+
+        <div className="mt-2 flex items-start justify-between gap-4 rounded-md border border-line bg-ink/70 p-4">
+          <div>
+            <p className="font-semibold text-slate-100">Web search</p>
+            <p className="mt-1 text-sm text-slate-400">
+              Let the AI search the web for up-to-date sources when it meets a concept it
+              doesn&apos;t know — while building this course and answering your doubts.
+              Off by default.
+            </p>
+          </div>
+          <button
+            type="button"
+            role="switch"
+            aria-checked={setup.web_search_enabled}
+            aria-label="Toggle web search for this course"
+            onClick={() => updateSetup("web_search_enabled", !setup.web_search_enabled)}
+            className={`relative mt-1 h-6 w-11 shrink-0 rounded-full transition ${
+              setup.web_search_enabled ? "bg-mint" : "bg-slate-600"
+            }`}
+          >
+            <span
+              className={`absolute top-0.5 h-5 w-5 rounded-full bg-white transition-all ${
+                setup.web_search_enabled ? "left-[22px]" : "left-0.5"
+              }`}
+            />
+          </button>
+        </div>
       </div>
     );
   }

@@ -14,6 +14,12 @@ import CourseReportPage from "./pages/CourseReportPage";
 import ProgressPage from "./pages/ProgressPage";
 import DebugPanel from "./pages/DebugPanel";
 import StudyAssistantPage from "./pages/StudyAssistantPage";
+import InstitutionHomePage from "./pages/institution/InstitutionHomePage";
+import CreateClassroomPage from "./pages/institution/CreateClassroomPage";
+import ClassroomPage from "./pages/institution/ClassroomPage";
+import TestBuilderPage from "./pages/institution/TestBuilderPage";
+import TestTakingPage from "./pages/institution/TestTakingPage";
+import StudentDrilldownPage from "./pages/institution/StudentDrilldownPage";
 
 function ProtectedRoute({ children }) {
   const { loading, isAuthenticated } = useAuth();
@@ -48,6 +54,12 @@ export default function App() {
         <Route path="/courses/:courseId/report" element={<CourseReportPage />} />
         <Route path="/courses/:courseId/modules/:moduleId" element={<ModuleReaderPage />} />
         <Route path="/study-assistant" element={<StudyAssistantPage />} />
+        <Route path="/institution" element={<InstitutionHomePage />} />
+        <Route path="/institution/classrooms/new" element={<CreateClassroomPage />} />
+        <Route path="/institution/classrooms/:classroomId" element={<ClassroomPage />} />
+        <Route path="/institution/classrooms/:classroomId/tests/:testId" element={<TestBuilderPage />} />
+        <Route path="/institution/classrooms/:classroomId/tests/:testId/take" element={<TestTakingPage />} />
+        <Route path="/institution/classrooms/:classroomId/students/:studentId" element={<StudentDrilldownPage />} />
         <Route path="/progress" element={<ProgressPage />} />
         <Route path="/debug" element={<DebugPanel />} />
       </Route>

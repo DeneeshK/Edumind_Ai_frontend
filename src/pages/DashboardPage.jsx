@@ -35,6 +35,19 @@ const workflowCards = [
     imageClass: "border-[#f97316]/20 bg-[#fff4eb]",
     accentClass: "text-[#f97316]",
     buttonClass: "bg-[#f97316] text-white group-hover:bg-[#ea580c]"
+  },
+  {
+    to: "/institution",
+    title: "My Institution",
+    description: "AI-powered classrooms for schools, coaching centers, and tutors",
+    detail: "Create classrooms, assign adaptive AI courses to every student, generate tests, and get analytics, insights, and a teaching assistant that knows your class.",
+    action: "Open My Institution",
+    image: "/images/slideshow-mentor-evaluation.png",
+    imageAlt: "Teacher managing an AI-powered classroom",
+    cardClass: "border-[#0ea5e9]/20 hover:border-[#0ea5e9]/40 hover:shadow-[0_24px_70px_rgba(14,165,233,0.16)] focus-visible:ring-[#0ea5e9]/35",
+    imageClass: "border-[#0ea5e9]/20 bg-[#eef8ff]",
+    accentClass: "text-[#0284c7]",
+    buttonClass: "bg-[#0ea5e9] text-white group-hover:bg-[#0284c7]"
   }
 ];
 
@@ -86,7 +99,7 @@ export default function DashboardPage() {
         </div>
       </section>
 
-      <section className="grid gap-10 lg:grid-cols-2 lg:gap-16 xl:gap-20">
+      <section className="grid gap-10 md:grid-cols-2 lg:grid-cols-3 lg:gap-8">
         {workflowCards.map(({
           to,
           title,

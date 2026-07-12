@@ -7,6 +7,7 @@ import {
   NotebookTabs,
   PanelLeftClose,
   PlusCircle,
+  School,
   ShieldCheck,
   X
 } from "lucide-react";
@@ -17,6 +18,7 @@ const links = [
   { to: "/dashboard", label: "Home", icon: Home },
   { to: "/courses", label: "Courses", icon: BookOpen },
   { to: "/study-assistant", label: "Study Assistant", icon: NotebookTabs },
+  { to: "/institution", label: "My Institution", icon: School },
   { to: "/courses/new", label: "New Course", icon: PlusCircle },
   { to: "/progress", label: "Progress", icon: Gauge },
   { to: "/debug", label: "Debug", icon: ShieldCheck }

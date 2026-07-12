@@ -2,6 +2,7 @@ import { AlertTriangle, CheckCircle2, ExternalLink, Loader2, Mic, MonitorUp, Rad
 import { useEffect, useRef, useState } from "react";
 import {
   finishLiveClassSession,
+  pollLiveClassStatus,
   startLiveClassSession,
 } from "../../api/studyApi";
 import Button from "../common/Button";
@@ -227,18 +228,16 @@ export default function LiveClassAssistant() {
 
       setProcessingText("Uploading recording...");
 
-      const formData = new FormData();
-      formData.append("file", fullBlob, "recording.webm");
+      // The backend saves the recording and responds immediately — it does
+      // not wait for transcription to finish, since that can take minutes
+      // for a longer class and would risk a proxy/gateway timeout otherwise.
+      await finishLiveClassSession(sessionIdRef.current, fullBlob);
 
-      // Upload the full recording to the finish endpoint directly
-      const data = await finishLiveClassSession(sessionIdRef.current, fullBlob);
+      setProcessingText("Transcribing and generating notes...");
+      const data = await pollLiveClassStatus(sessionIdRef.current);
 
-      if (data.status === "completed" && !data.error) {
-        setResult(data);
-        setStatus("done");
-      } else {
-        throw new Error(data.error || "Live class processing failed.");
-      }
+      setResult(data);
+      setStatus("done");
     } catch (err) {
       setError(mapCaptureError(err));
       setStatus("error");

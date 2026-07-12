@@ -85,31 +85,54 @@ export function startLiveClassSession({ title, subject, depth = "medium" }) {
   });
 }
 
-// uploadLiveClassAudioChunk is no longer used — recording is now sent
-// as a single blob at finish. Kept here for reference only.
-export function uploadLiveClassAudioChunk(sessionId, blob) {
+// Sends the complete recording blob to the finish endpoint. The backend saves
+// it and responds immediately (202) with a status_url — conversion,
+// transcription, and note generation continue in the background, since a
+// long recording can take minutes to process and would otherwise risk being
+// killed by a proxy/gateway timeout on one long-held request.
+export function finishLiveClassSession(sessionId, recordingBlob) {
   const formData = new FormData();
-  formData.append("file", blob, `chunk-${Date.now()}.webm`);
-
-  return studyRequest(`/live-class/${encodeURIComponent(sessionId)}/audio-chunk`, {
+  formData.append("file", recordingBlob, "recording.webm");
+  return studyRequest(`/live-class/${encodeURIComponent(sessionId)}/finish`, {
     method: "POST",
     body: formData,
   });
 }
 
-// Sends the complete recording blob directly to the finish endpoint.
-// The backend now accepts an optional `file` field on this endpoint.
-export function finishLiveClassSession(sessionId, recordingBlob) {
-  if (recordingBlob) {
-    const formData = new FormData();
-    formData.append("file", recordingBlob, "recording.webm");
-    return studyRequest(`/live-class/${encodeURIComponent(sessionId)}/finish`, {
-      method: "POST",
-      body: formData,
-    });
-  }
-  // Fallback: no blob (e.g. called without recording)
-  return studyRequest(`/live-class/${encodeURIComponent(sessionId)}/finish`, {
-    method: "POST",
+export function getLiveClassStatus(sessionId) {
+  return studyRequest(`/live-class/${encodeURIComponent(sessionId)}/status`);
+}
+
+// Polls GET /live-class/{sessionId}/status until the backend reports
+// "completed" or "failed". Resolves with the final status payload, or
+// rejects if the session fails or polling exceeds maxWaitMs.
+export function pollLiveClassStatus(sessionId, { intervalMs = 4000, maxWaitMs = 60 * 60 * 1000 } = {}) {
+  const startedAt = Date.now();
+
+  return new Promise((resolve, reject) => {
+    async function tick() {
+      let data;
+      try {
+        data = await getLiveClassStatus(sessionId);
+      } catch (error) {
+        reject(error);
+        return;
+      }
+
+      if (data.status === "completed") {
+        resolve(data);
+        return;
+      }
+      if (data.status === "failed") {
+        reject(new Error(data.error || "Live class processing failed."));
+        return;
+      }
+      if (Date.now() - startedAt > maxWaitMs) {
+        reject(new Error("Timed out waiting for the live class to finish processing."));
+        return;
+      }
+      setTimeout(tick, intervalMs);
+    }
+    tick();
   });
 }

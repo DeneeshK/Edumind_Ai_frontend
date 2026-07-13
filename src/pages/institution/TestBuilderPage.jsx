@@ -159,7 +159,7 @@ export default function TestBuilderPage() {
         Back to tests
       </Link>
 
-      <div className="glass-panel rounded-xl p-6">
+      <div className="rounded-lg border border-line bg-panel p-6">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-2">
@@ -241,7 +241,7 @@ export default function TestBuilderPage() {
       </div>
 
       {results?.stats?.graded > 0 && (
-        <section className="glass-panel rounded-xl p-6">
+        <section className="rounded-lg border border-line bg-panel p-6">
           <h2 className="text-lg font-bold text-slate-100">Results</h2>
           <p className="mt-1 text-sm text-slate-400">
             {results.stats.graded} graded · class average {pct(results.stats.avg_score)} ·
@@ -280,7 +280,7 @@ export default function TestBuilderPage() {
       <section className="space-y-3">
         <h2 className="text-lg font-bold text-slate-100">Questions</h2>
         {test.questions.map((question, index) => (
-          <div key={question.id} className="glass-panel rounded-xl p-4">
+          <div key={question.id} className="rounded-lg border border-line bg-panel p-4">
             {editing === question.id ? (
               <QuestionEditor
                 question={question}

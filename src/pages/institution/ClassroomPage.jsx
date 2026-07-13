@@ -4,6 +4,7 @@ import {
   BarChart3,
   Bot,
   ClipboardList,
+  FileCheck2,
   GraduationCap,
   LibraryBig,
   LogOut,
@@ -20,6 +21,7 @@ import AiStudioTab from "../../components/institution/AiStudioTab";
 import AnalyticsTab from "../../components/institution/AnalyticsTab";
 import AssistantTab from "../../components/institution/AssistantTab";
 import CoursesTab from "../../components/institution/CoursesTab";
+import ExamsTab from "../../components/institution/ExamsTab";
 import MembersTab from "../../components/institution/MembersTab";
 import MyProgressTab from "../../components/institution/MyProgressTab";
 import StreamTab from "../../components/institution/StreamTab";
@@ -33,6 +35,7 @@ const TEACHER_TABS = [
   { key: "students", label: "Students", icon: Users },
   { key: "courses", label: "Courses", icon: LibraryBig },
   { key: "tests", label: "Tests", icon: ClipboardList },
+  { key: "exams", label: "Exams", icon: FileCheck2 },
   { key: "analytics", label: "Analytics", icon: BarChart3 },
   { key: "ai", label: "AI Studio", icon: Sparkles },
   { key: "assistant", label: "Assistant", icon: Bot }
@@ -42,6 +45,7 @@ const STUDENT_TABS = [
   { key: "stream", label: "Stream", icon: Megaphone },
   { key: "courses", label: "My Courses", icon: LibraryBig },
   { key: "tests", label: "Tests", icon: ClipboardList },
+  { key: "exams", label: "Exams", icon: FileCheck2 },
   { key: "progress", label: "My Progress", icon: GraduationCap }
 ];
 
@@ -51,7 +55,6 @@ export default function ClassroomPage() {
   const { user } = useAuth();
   const { classroom, loading, error, reload } = useClassroom(classroomId);
   const [searchParams, setSearchParams] = useSearchParams();
-  const [joinCode, setJoinCode] = useState("");
   const [busy, setBusy] = useState(false);
 
   const isTeacher = classroom?.viewer_role === "teacher";
@@ -60,10 +63,6 @@ export default function ClassroomPage() {
     const requested = searchParams.get("tab");
     return tabs.some((t) => t.key === requested) ? requested : tabs[0].key;
   }, [searchParams, tabs]);
-
-  useEffect(() => {
-    if (classroom?.join_code) setJoinCode(classroom.join_code);
-  }, [classroom]);
 
   useEffect(() => {
     if (classroom && !isTeacher) {
@@ -114,41 +113,47 @@ export default function ClassroomPage() {
   }
 
   return (
-    <div className="mx-auto max-w-7xl space-y-6">
-      <div>
-        <Link
-          to="/institution"
-          className="inline-flex items-center gap-1.5 text-sm font-semibold text-mint hover:text-[#6d28d9]"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          My Institution
-        </Link>
-        <div className="mt-3 flex flex-wrap items-start justify-between gap-4">
+    <div className="mx-auto max-w-6xl space-y-6">
+      <Link
+        to="/institution"
+        className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-400 transition hover:text-mint"
+      >
+        <ArrowLeft className="h-4 w-4" />
+        My Institution
+      </Link>
+
+      <div className="rounded-lg border border-line bg-panel/60 p-6">
+        <div className="flex flex-wrap items-start justify-between gap-4">
           <div className="min-w-0">
-            <div className="flex flex-wrap items-center gap-3">
-              <h1 className="text-2xl font-bold text-slate-100 sm:text-3xl">{classroom.name}</h1>
-              <span className="rounded-full bg-mint/10 px-2.5 py-0.5 text-xs font-bold uppercase tracking-wide text-mint">
+            <div className="flex flex-wrap items-center gap-2.5">
+              <span className="text-xs font-semibold uppercase tracking-[0.2em] text-mint">
                 {isTeacher ? "Teacher" : "Student"}
               </span>
               {classroom.status === "archived" && (
-                <span className="rounded-full bg-slate-200 px-2.5 py-0.5 text-xs font-semibold text-slate-600">
+                <span className="rounded-md border border-line bg-panel2 px-2 py-0.5 text-xs font-medium text-slate-500">
                   Archived
                 </span>
               )}
             </div>
-            <p className="mt-1 text-sm text-slate-400">
-              {[classroom.subject, classroom.grade_level].filter(Boolean).join(" · ")}
-              {classroom.description ? ` — ${classroom.description}` : ""}
-            </p>
+            <h1 className="mt-2 text-2xl font-semibold text-slate-50 sm:text-3xl">{classroom.name}</h1>
+            {(classroom.subject || classroom.description) && (
+              <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-400">
+                {classroom.subject && (
+                  <span className="font-medium text-slate-300">{classroom.subject}</span>
+                )}
+                {classroom.subject && classroom.description ? " — " : ""}
+                {classroom.description}
+              </p>
+            )}
           </div>
           <div className="flex shrink-0 gap-2">
             {isTeacher ? (
-              <Button variant="ghost" onClick={handleArchive} disabled={busy}>
+              <Button variant="secondary" onClick={handleArchive} disabled={busy}>
                 <Archive className="h-4 w-4" />
                 {classroom.status === "archived" ? "Re-activate" : "Archive"}
               </Button>
             ) : (
-              <Button variant="ghost" onClick={handleLeave} disabled={busy} className="text-slate-400 hover:!text-rose">
+              <Button variant="secondary" onClick={handleLeave} disabled={busy} className="hover:!border-rose/40 hover:!text-rose">
                 <LogOut className="h-4 w-4" />
                 Leave
               </Button>
@@ -157,33 +162,34 @@ export default function ClassroomPage() {
         </div>
       </div>
 
-      <nav className="flex gap-1 overflow-x-auto border-b border-line pb-px" aria-label="Classroom sections">
-        {tabs.map(({ key, label, icon: Icon }) => (
-          <button
-            key={key}
-            type="button"
-            onClick={() => setSearchParams({ tab: key })}
-            className={`flex shrink-0 items-center gap-2 border-b-2 px-4 py-2.5 text-sm font-semibold transition ${
-              activeTab === key
-                ? "border-mint text-mint"
-                : "border-transparent text-slate-400 hover:text-slate-100"
-            }`}
-          >
-            <Icon className="h-4 w-4" />
-            {label}
-          </button>
-        ))}
+      <nav
+        className="flex gap-1 overflow-x-auto rounded-lg border border-line bg-panel2 p-1"
+        aria-label="Classroom sections"
+      >
+        {tabs.map(({ key, label, icon: Icon }) => {
+          const active = activeTab === key;
+          return (
+            <button
+              key={key}
+              type="button"
+              onClick={() => setSearchParams({ tab: key })}
+              className={`flex shrink-0 items-center gap-2 rounded-md px-3.5 py-2 text-sm font-medium transition ${
+                active
+                  ? "bg-white text-slate-100 shadow-sm ring-1 ring-line"
+                  : "text-slate-400 hover:bg-white/60 hover:text-slate-100"
+              }`}
+            >
+              <Icon className={`h-4 w-4 ${active ? "text-mint" : "text-slate-400"}`} />
+              {label}
+            </button>
+          );
+        })}
       </nav>
 
       <div className="pb-10">
         {activeTab === "stream" && <StreamTab classroomId={classroomId} isTeacher={isTeacher} />}
         {activeTab === "students" && isTeacher && (
-          <MembersTab
-            classroomId={classroomId}
-            isTeacher
-            joinCode={joinCode}
-            onJoinCodeChange={setJoinCode}
-          />
+          <MembersTab classroomId={classroomId} isTeacher />
         )}
         {activeTab === "courses" && <CoursesTab classroomId={classroomId} isTeacher={isTeacher} />}
         {activeTab === "tests" && (
@@ -194,6 +200,7 @@ export default function ClassroomPage() {
               navigate(`/institution/classrooms/${classroomId}/tests/${testId}`)}
           />
         )}
+        {activeTab === "exams" && <ExamsTab isTeacher={isTeacher} />}
         {activeTab === "analytics" && isTeacher && <AnalyticsTab classroomId={classroomId} />}
         {activeTab === "ai" && isTeacher && <AiStudioTab classroomId={classroomId} />}
         {activeTab === "assistant" && isTeacher && <AssistantTab classroomId={classroomId} />}

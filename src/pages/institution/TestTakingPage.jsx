@@ -23,7 +23,7 @@ function ResultView({ test, attempt, classroomId }) {
   const byId = Object.fromEntries(perQuestion.map((p) => [p.question_id, p]));
   return (
     <div className="space-y-5">
-      <div className="glass-panel rounded-xl p-6 text-center">
+      <div className="rounded-lg border border-line bg-panel p-6 text-center">
         <CheckCircle2 className="mx-auto h-10 w-10 text-[#1baf7a]" />
         <h2 className="mt-2 text-2xl font-bold text-slate-100">
           {attempt.score}/{attempt.max_score}
@@ -39,7 +39,7 @@ function ResultView({ test, attempt, classroomId }) {
         return (
           <div
             key={question.id}
-            className={`glass-panel rounded-xl border-l-4 p-4 ${
+            className={`rounded-lg border border-line bg-panel border-l-4 p-4 ${
               good ? "border-l-[#1baf7a]" : partial ? "border-l-[#eda100]" : "border-l-rose"
             }`}
           >
@@ -199,7 +199,7 @@ export default function TestTakingPage() {
         Back to tests
       </Link>
 
-      <div className="glass-panel rounded-xl p-6">
+      <div className="rounded-lg border border-line bg-panel p-6">
         <h1 className="text-2xl font-bold text-slate-100">{test.title}</h1>
         <p className="mt-1 text-sm text-slate-400">
           {test.topic} · {test.question_count} questions · {test.duration_minutes} minutes
@@ -223,7 +223,7 @@ export default function TestTakingPage() {
 
       {attempt?.status === "in_progress" && (
         <>
-          <div className="sticky top-2 z-10 flex items-center justify-between rounded-xl border border-line bg-white/95 px-4 py-2.5 shadow-sm backdrop-blur">
+          <div className="sticky top-2 z-10 flex items-center justify-between rounded-lg border border-line bg-white/95 px-4 py-2.5 shadow-sm backdrop-blur">
             <span className="text-sm font-semibold text-slate-400">
               {answeredCount}/{test.questions.length} answered · autosaves
             </span>
@@ -238,7 +238,7 @@ export default function TestTakingPage() {
           </div>
 
           {test.questions.map((question, index) => (
-            <div key={question.id} className="glass-panel rounded-xl p-5">
+            <div key={question.id} className="rounded-lg border border-line bg-panel p-5">
               <p className="text-sm font-semibold text-slate-100">
                 <span className="text-slate-500">Q{index + 1}.</span> {question.question_text}
                 <span className="ml-2 text-xs font-normal text-slate-500">

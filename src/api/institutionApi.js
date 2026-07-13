@@ -27,14 +27,27 @@ export function archiveClassroom(classroomId) {
   return apiRequest(`${BASE}/classrooms/${classroomId}/archive`, { method: "POST" });
 }
 
-export function regenerateJoinCode(classroomId) {
-  return apiRequest(`${BASE}/classrooms/${classroomId}/regenerate-code`, { method: "POST" });
+// ── Invitations (email allowlist) ─────────────────────────────────────────────
+
+export function acceptInvitation(classroomId) {
+  return apiRequest(`${BASE}/classrooms/${classroomId}/accept`, { method: "POST" });
 }
 
-export function joinClassroom(joinCode) {
-  return apiRequest(`${BASE}/classrooms/join`, {
+export function fetchInvitations(classroomId) {
+  return apiRequest(`${BASE}/classrooms/${classroomId}/invitations`);
+}
+
+export function inviteStudents(classroomId, students) {
+  return apiRequest(`${BASE}/classrooms/${classroomId}/invitations`, {
     method: "POST",
-    body: JSON.stringify({ join_code: joinCode })
+    body: JSON.stringify({ students })
+  });
+}
+
+export function revokeInvitation(classroomId, email) {
+  return apiRequest(`${BASE}/classrooms/${classroomId}/invitations/revoke`, {
+    method: "POST",
+    body: JSON.stringify({ email })
   });
 }
 
@@ -42,12 +55,6 @@ export function joinClassroom(joinCode) {
 
 export function fetchMembers(classroomId) {
   return apiRequest(`${BASE}/classrooms/${classroomId}/members`);
-}
-
-export function approveMember(classroomId, studentId) {
-  return apiRequest(`${BASE}/classrooms/${classroomId}/members/${studentId}/approve`, {
-    method: "POST"
-  });
 }
 
 export function removeMember(classroomId, studentId) {
@@ -225,6 +232,19 @@ export function createPost(classroomId, payload) {
   return apiRequest(`${BASE}/classrooms/${classroomId}/posts`, {
     method: "POST",
     body: JSON.stringify(payload)
+  });
+}
+
+export function createResourcePost(classroomId, { postType, title, bodyMarkdown, linkUrl, eventTime }) {
+  return apiRequest(`${BASE}/classrooms/${classroomId}/posts`, {
+    method: "POST",
+    body: JSON.stringify({
+      post_type: postType,
+      title: title || "",
+      body_markdown: bodyMarkdown || "",
+      link_url: linkUrl || "",
+      event_time: eventTime || ""
+    })
   });
 }
 

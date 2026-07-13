@@ -64,7 +64,7 @@ export default function AssistantTab({ classroomId }) {
     <div className="flex h-[calc(100vh-16rem)] min-h-[420px] flex-col">
       <div className="flex-1 space-y-4 overflow-y-auto pb-4">
         {messages.length === 0 && !thinking && (
-          <div className="glass-panel rounded-xl p-6 text-center">
+          <div className="rounded-lg border border-line bg-panel p-6 text-center">
             <Bot className="mx-auto h-10 w-10 text-mint" />
             <h3 className="mt-3 text-lg font-bold text-slate-100">Your AI teaching assistant</h3>
             <p className="mx-auto mt-1 max-w-md text-sm text-slate-400">
@@ -89,10 +89,10 @@ export default function AssistantTab({ classroomId }) {
         {messages.map((msg) => (
           <div key={msg.id} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
             <div
-              className={`max-w-[85%] rounded-xl px-4 py-3 text-sm ${
+              className={`max-w-[85%] rounded-lg px-4 py-3 text-sm ${
                 msg.role === "user"
                   ? "bg-mint text-white"
-                  : "glass-panel text-slate-300"
+                  : "border border-line bg-panel text-slate-300"
               }`}
             >
               {msg.role === "assistant" ? (
@@ -126,7 +126,7 @@ export default function AssistantTab({ classroomId }) {
 
         {thinking && (
           <div className="flex justify-start">
-            <div className="glass-panel flex items-center gap-2 rounded-xl px-4 py-3 text-sm text-slate-400">
+            <div className="border border-line bg-panel flex items-center gap-2 rounded-lg px-4 py-3 text-sm text-slate-400">
               <Bot className="h-4 w-4 animate-pulse text-mint" />
               Reading classroom analytics…
             </div>

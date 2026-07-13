@@ -8,16 +8,16 @@ import LoadingSpinner from "../common/LoadingSpinner";
 import { pct } from "./charts";
 
 const TEST_STATUS_STYLES = {
-  draft: "bg-slate-200 text-slate-600",
-  approved: "bg-[#1baf7a]/15 text-[#0c7a53]",
-  scheduled: "bg-[#eda100]/15 text-[#9a6a00]",
-  live: "bg-mint/10 text-mint",
-  closed: "bg-slate-200 text-slate-500"
+  draft: "border-line bg-panel2 text-slate-500",
+  approved: "border-mint/30 bg-mint/5 text-mint",
+  scheduled: "border-[#eda100]/40 bg-[#eda100]/10 text-[#9a6a00]",
+  live: "border-mint/40 bg-mint/10 text-mint",
+  closed: "border-line bg-panel2 text-slate-400"
 };
 
 export function TestStatusChip({ status }) {
   return (
-    <span className={`rounded-full px-2 py-0.5 text-xs font-semibold ${TEST_STATUS_STYLES[status] || TEST_STATUS_STYLES.draft}`}>
+    <span className={`rounded-md border px-2 py-0.5 text-xs font-medium capitalize ${TEST_STATUS_STYLES[status] || TEST_STATUS_STYLES.draft}`}>
       {status}
     </span>
   );
@@ -71,7 +71,7 @@ function GenerateTestForm({ classroomId, onCreated, onCancel }) {
   }
 
   return (
-    <form onSubmit={handleGenerate} className="glass-panel space-y-4 rounded-xl p-5">
+    <form onSubmit={handleGenerate} className="border border-line bg-panel space-y-4 rounded-lg p-5">
       <div className="flex items-center gap-2">
         <Sparkles className="h-5 w-5 text-mint" />
         <h3 className="text-base font-bold text-slate-100">Generate a test with AI</h3>
@@ -239,7 +239,7 @@ export default function TestsTab({ classroomId, isTeacher, navigateToTest }) {
           const status = test.effective_status || test.status;
           const attempt = test.my_attempt;
           return (
-            <div key={test.id} className="glass-panel rounded-xl p-4">
+            <div key={test.id} className="rounded-lg border border-line bg-panel p-4">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div className="flex min-w-0 items-center gap-3">
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-mint/10 text-mint">

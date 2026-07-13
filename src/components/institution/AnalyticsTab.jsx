@@ -153,13 +153,13 @@ export default function AnalyticsTab({ classroomId }) {
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <section className="glass-panel rounded-xl p-5">
+        <section className="rounded-lg border border-line bg-panel p-5">
           <h3 className="mb-2 text-sm font-bold text-slate-100">
             Weekly average test score
           </h3>
           <ScoreTrendChart data={overview.score_trend} />
         </section>
-        <section className="glass-panel rounded-xl p-5">
+        <section className="rounded-lg border border-line bg-panel p-5">
           <h3 className="mb-2 flex items-center gap-2 text-sm font-bold text-slate-100">
             <HelpCircle className="h-4 w-4 text-mint" />
             Most-asked doubt concepts
@@ -168,7 +168,7 @@ export default function AnalyticsTab({ classroomId }) {
         </section>
       </div>
 
-      <section className="glass-panel rounded-xl p-5">
+      <section className="rounded-lg border border-line bg-panel p-5">
         <h3 className="mb-2 text-sm font-bold text-slate-100">Concept mastery heatmap</h3>
         <p className="mb-3 text-xs text-slate-400">
           Darker = higher mastery. Hover a cell for the exact value. Dashed cells have no data yet.
@@ -177,7 +177,7 @@ export default function AnalyticsTab({ classroomId }) {
       </section>
 
       {atRisk.length > 0 && (
-        <section className="glass-panel rounded-xl border-l-4 border-l-rose p-5">
+        <section className="rounded-lg border border-line bg-panel border-l-4 border-l-rose p-5">
           <h3 className="mb-3 flex items-center gap-2 text-sm font-bold text-slate-100">
             <AlertTriangle className="h-4 w-4 text-rose" />
             Students at risk ({atRisk.length})
@@ -197,11 +197,11 @@ export default function AnalyticsTab({ classroomId }) {
       )}
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <section className="glass-panel rounded-xl p-5">
+        <section className="rounded-lg border border-line bg-panel p-5">
           <h3 className="mb-2 text-sm font-bold text-slate-100">Course progress by student</h3>
           <ProgressBarChart students={students} />
         </section>
-        <section className="glass-panel rounded-xl p-5">
+        <section className="rounded-lg border border-line bg-panel p-5">
           <h3 className="mb-3 flex items-center gap-2 text-sm font-bold text-slate-100">
             <Award className="h-4 w-4 text-mint" />
             Top performers
@@ -228,7 +228,7 @@ export default function AnalyticsTab({ classroomId }) {
         </section>
       </div>
 
-      <section className="glass-panel rounded-xl p-5">
+      <section className="rounded-lg border border-line bg-panel p-5">
         <h3 className="mb-3 flex items-center gap-2 text-sm font-bold text-slate-100">
           <Users className="h-4 w-4 text-mint" />
           Student ranking

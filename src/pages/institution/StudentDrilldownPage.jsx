@@ -83,12 +83,12 @@ export default function StudentDrilldownPage() {
       </div>
 
       {recData && (
-        <section className="glass-panel rounded-xl border-l-4 border-l-mint p-5">
+        <section className="rounded-lg border border-line bg-panel border-l-4 border-l-mint p-5">
           <h3 className="flex items-center gap-2 text-sm font-bold text-slate-100">
             <Sparkles className="h-4 w-4 text-mint" />
             Recommended for {detail.name}
           </h3>
-          {recData.next_step && <p className="mt-2 text-sm font-semibold text-slate-100">🎯 {recData.next_step}</p>}
+          {recData.next_step && <p className="mt-2 text-sm font-medium text-slate-100">{recData.next_step}</p>}
           {recData.revise?.length > 0 && (
             <ul className="mt-2 space-y-1 text-sm text-slate-300">
               {recData.revise.map((item) => (
@@ -109,7 +109,7 @@ export default function StudentDrilldownPage() {
       {error && <p className="text-sm text-rose">{error}</p>}
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <section className="glass-panel rounded-xl p-5">
+        <section className="rounded-lg border border-line bg-panel p-5">
           <h3 className="mb-3 text-sm font-bold text-slate-100">Weakest concepts</h3>
           {detail.weak_concepts.length === 0 ? (
             <p className="text-sm text-slate-400">No mastery data yet.</p>
@@ -124,7 +124,7 @@ export default function StudentDrilldownPage() {
             </ul>
           )}
         </section>
-        <section className="glass-panel rounded-xl p-5">
+        <section className="rounded-lg border border-line bg-panel p-5">
           <h3 className="mb-3 text-sm font-bold text-slate-100">Misconceptions detected</h3>
           {detail.misconceptions.length === 0 ? (
             <p className="text-sm text-slate-400">No recorded misconceptions.</p>
@@ -144,7 +144,7 @@ export default function StudentDrilldownPage() {
         </section>
       </div>
 
-      <section className="glass-panel rounded-xl p-5">
+      <section className="rounded-lg border border-line bg-panel p-5">
         <h3 className="mb-3 text-sm font-bold text-slate-100">Assigned courses</h3>
         {detail.assignments.length === 0 ? (
           <p className="text-sm text-slate-400">No courses assigned.</p>
@@ -168,7 +168,7 @@ export default function StudentDrilldownPage() {
       </section>
 
       {detail.test_history.length > 0 && (
-        <section className="glass-panel rounded-xl p-5">
+        <section className="rounded-lg border border-line bg-panel p-5">
           <h3 className="mb-3 text-sm font-bold text-slate-100">Test history</h3>
           <div className="space-y-2">
             {detail.test_history.map((t, i) => (

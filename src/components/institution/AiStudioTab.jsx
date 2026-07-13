@@ -26,7 +26,7 @@ const SEVERITY = {
 
 function SectionShell({ icon: Icon, title, subtitle, artifact, busy, onGenerate, generateLabel, children }) {
   return (
-    <section className="glass-panel rounded-xl p-5">
+    <section className="rounded-lg border border-line bg-panel p-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h3 className="flex items-center gap-2 text-base font-bold text-slate-100">

@@ -62,7 +62,7 @@ export default function MyProgressTab({ classroomId, studentId }) {
         />
       </div>
 
-      <section className="glass-panel rounded-xl p-5">
+      <section className="rounded-lg border border-line bg-panel p-5">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <h3 className="flex items-center gap-2 text-sm font-bold text-slate-100">
             <Sparkles className="h-4 w-4 text-mint" />
@@ -81,9 +81,10 @@ export default function MyProgressTab({ classroomId, studentId }) {
         ) : (
           <div className="mt-4 space-y-3">
             {recData.next_step && (
-              <p className="rounded-lg bg-mint/5 p-3 text-sm font-semibold text-slate-100">
-                🎯 {recData.next_step}
-              </p>
+              <div className="rounded-lg border border-line bg-panel2/60 p-3">
+                <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Do this next</p>
+                <p className="mt-1 text-sm font-medium text-slate-100">{recData.next_step}</p>
+              </div>
             )}
             {recData.revise?.length > 0 && (
               <div>
@@ -107,7 +108,7 @@ export default function MyProgressTab({ classroomId, studentId }) {
               </div>
             )}
             {recData.focus_tip && (
-              <p className="text-sm italic text-slate-400">💡 {recData.focus_tip}</p>
+              <p className="text-sm text-slate-400">{recData.focus_tip}</p>
             )}
             {recData.encouragement && (
               <p className="text-sm font-medium text-mint">{recData.encouragement}</p>
@@ -117,7 +118,7 @@ export default function MyProgressTab({ classroomId, studentId }) {
       </section>
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <section className="glass-panel rounded-xl p-5">
+        <section className="rounded-lg border border-line bg-panel p-5">
           <h3 className="mb-3 flex items-center gap-2 text-sm font-bold text-slate-100">
             <TrendingDown className="h-4 w-4 text-rose" />
             Concepts to strengthen
@@ -146,7 +147,7 @@ export default function MyProgressTab({ classroomId, studentId }) {
           )}
         </section>
 
-        <section className="glass-panel rounded-xl p-5">
+        <section className="rounded-lg border border-line bg-panel p-5">
           <h3 className="mb-3 flex items-center gap-2 text-sm font-bold text-slate-100">
             <Award className="h-4 w-4 text-mint" />
             My strengths
@@ -177,7 +178,7 @@ export default function MyProgressTab({ classroomId, studentId }) {
       </div>
 
       {detail.test_history.length > 0 && (
-        <section className="glass-panel rounded-xl p-5">
+        <section className="rounded-lg border border-line bg-panel p-5">
           <h3 className="mb-3 text-sm font-bold text-slate-100">My test history</h3>
           <div className="space-y-2">
             {detail.test_history.map((t) => (

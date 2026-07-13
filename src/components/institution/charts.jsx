@@ -57,14 +57,14 @@ export function pct(value) {
 
 export function KpiTile({ label, value, hint, icon: Icon }) {
   return (
-    <div className="glass-panel rounded-xl p-4">
+    <div className="rounded-lg border border-line bg-panel p-4">
       <div className="flex items-center justify-between">
-        <span className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+        <span className="text-xs font-medium uppercase tracking-wide text-slate-500">
           {label}
         </span>
-        {Icon && <Icon className="h-4 w-4 text-mint" />}
+        {Icon && <Icon className="h-4 w-4 text-slate-400" />}
       </div>
-      <div className="mt-2 text-2xl font-bold text-slate-100">{value}</div>
+      <div className="mt-2 text-2xl font-semibold text-slate-50">{value}</div>
       {hint && <div className="mt-1 text-xs text-slate-400">{hint}</div>}
     </div>
   );

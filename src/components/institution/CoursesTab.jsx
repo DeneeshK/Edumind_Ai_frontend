@@ -24,15 +24,15 @@ import LoadingSpinner from "../common/LoadingSpinner";
 import { pct } from "./charts";
 
 const STATUS_STYLES = {
-  draft: "bg-slate-200 text-slate-600",
-  approved: "bg-[#1baf7a]/15 text-[#0c7a53]",
-  assigned: "bg-mint/10 text-mint",
-  archived: "bg-slate-200 text-slate-500"
+  draft: "border-line bg-panel2 text-slate-500",
+  approved: "border-mint/30 bg-mint/5 text-mint",
+  assigned: "border-mint/40 bg-mint/10 text-mint",
+  archived: "border-line bg-panel2 text-slate-400"
 };
 
 function StatusChip({ status }) {
   return (
-    <span className={`rounded-full px-2 py-0.5 text-xs font-semibold ${STATUS_STYLES[status] || STATUS_STYLES.draft}`}>
+    <span className={`rounded-md border px-2 py-0.5 text-xs font-medium capitalize ${STATUS_STYLES[status] || STATUS_STYLES.draft}`}>
       {status}
     </span>
   );
@@ -189,7 +189,7 @@ function TeacherCourses({ classroomId }) {
       </div>
 
       {showPicker && (
-        <div className="glass-panel rounded-xl p-4">
+        <div className="rounded-lg border border-line bg-panel p-4">
           <h4 className="text-sm font-bold text-slate-100">Pick one of your courses</h4>
           {available.length === 0 ? (
             <p className="mt-2 text-sm text-slate-400">
@@ -230,7 +230,7 @@ function TeacherCourses({ classroomId }) {
 
       <div className="space-y-3">
         {courses.map((course) => (
-          <div key={course.id} className="glass-panel rounded-xl p-4">
+          <div key={course.id} className="rounded-lg border border-line bg-panel p-4">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div className="min-w-0">
                 <div className="flex flex-wrap items-center gap-2">
@@ -326,7 +326,7 @@ function StudentCourses({ classroomId }) {
         <Link
           key={assignment.id}
           to={`/courses/${assignment.course_id}`}
-          className="group glass-panel rounded-xl p-5 transition hover:-translate-y-0.5 hover:shadow-glow"
+          className="group rounded-lg border border-line bg-panel p-5 transition hover:-translate-y-0.5 hover:shadow-glow"
         >
           <div className="flex items-center justify-between">
             <span className="rounded-full bg-mint/10 px-2 py-0.5 text-xs font-semibold text-mint">
